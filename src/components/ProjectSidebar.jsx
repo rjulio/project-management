@@ -1,6 +1,33 @@
 import Button from './Button';
 
-export default function ProjectSidebar({ onStartAddProject, projects }) {
+export default function ProjectSidebar({ 
+	onStartAddProject, 
+	onSelectProject, 
+	projects,
+	selectedProjectId
+}) {
+
+	function renderButton(project) {
+		let cssClasses = `
+			w-full px-2 py-1 my-1
+			text-left hover:text-stone-200
+			rounded-sm hover:bg-stone-800
+		`;
+		if (project.id === selectedProjectId) {
+			cssClasses += ' bg-stone-800 text-stone-200';
+		} else {
+			cssClasses += ' text-stone-400';
+		}
+
+		return (
+			<button 
+				className={ cssClasses }
+				onClick={ () => onSelectProject(project.id) }>
+				{ project.title }
+			</button>
+		)
+	}
+
 	return (
 		<aside className={`
 			w-1/3 md:w-72 px-8 py-16 
@@ -16,17 +43,13 @@ export default function ProjectSidebar({ onStartAddProject, projects }) {
 				</Button>
 			</div>
 			<ul className="mt-8">
-				{ projects?.map((proj) => (
-					<li key={ proj.id }>
-						<button className={`
-							w-full px-2 py-1 my-1
-							text-left text-stone-400 hover:text-stone-200
-							rounded-sm hover:bg-stone-800
-						`}>
-							{ proj.title }
-						</button>
-					</li>
-				)) }
+				{ projects?.map((proj) => {
+					return (
+						<li key={ proj.id }>
+							{ renderButton(proj) }
+						</li>
+					)
+				}) }
 			</ul>
 		</aside>
 	);
