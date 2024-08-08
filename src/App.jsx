@@ -65,9 +65,30 @@ function App() {
   }
 
   function handleAddTask(text) {
+    setProjectsStates((prevState) => {
+      const newTask = {
+        text, 
+        id: Math.random(),
+        projectId: prevState.selectedProjectId
+      };
+
+      return {
+        ...prevState,
+        selectedProjectId: prevState.selectedProjectId,
+        tasks: [newTask, ...prevState.tasks]
+      };
+    });
   }
 
-  function handleDeleteTask() {}
+  function handleDeleteTask(id) {
+    setProjectsStates((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: prevState.selectedProjectId,
+        tasks: prevState.tasks.filter((task) => task.id !== id)
+      };
+    });
+  }
 
   const selectedProject = projectsState.projects.find((project) => project.id === projectsState.selectedProjectId);
   let content = (
@@ -75,7 +96,8 @@ function App() {
       onDelete={ handleDeleteProject } 
       project={ selectedProject }
       onAddTask={ handleAddTask }
-      onDeleteTask={ handleDeleteTask } />);
+      onDeleteTask={ handleDeleteTask }
+      tasks={ projectsState.tasks } />);
 
   if (projectsState.selectedProjectId === null) {
     content = <NewProject onAdd={ handleAddProject } onCancel={ handleCancelAddProject } />;
@@ -84,11 +106,12 @@ function App() {
   } 
 
   return (
-    <main className="h-screen my-8 flex gap-8">
+    <main className="h-screen py-8 flex gap-8">
       <ProjectSidebar 
         onStartAddProject={ handleStartAddProject }
         projects={ projectsState.projects }
         onSelectProject={ handleSelectProject }
+        selectedProjectId={ projectsState.selectedProjectId }
       />
       { content }
     </main>
